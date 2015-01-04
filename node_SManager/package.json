@@ -1,0 +1,10 @@
+{
+  "name": "node_SManager",
+  "version": "0.0.0",
+  "description": "node_SManager",
+  "main": "app.js",
+  "author": {
+    "name": "VladHome",
+    "email": ""
+  }
+}

@@ -1,0 +1,107 @@
+<!doctype html>
+<html>
+<head>
+<meta charset="utf-8">
+<title>Remote Command line</title>
+<style type="text/css" >
+#terminal{
+	min-width:80%;
+}
+
+.view{	
+	 box-shadow: 5px 5px 5px #888888;
+	 margin:1em;
+	 padding:1em;
+	 border:thin solid rgba(162,162,162,1.00);
+	 border-radius:5px;
+	 min-width:20em;
+	 width:93%;
+	 height:100%;
+	 float:left;
+	 margin-right:2em;
+}
+.view *{
+	float:left;
+	margin-right:1em;
+}
+.viewport{
+	float:left;
+	margin:0.7em;
+	border:thin solid rgba(162,162,162,1.00);
+	
+}
+#btnLogout{
+	float:right;
+}
+</style>
+<script src="js/jquery-2.1.1.min.js" ></script>
+<script type="text/javascript" >
+var logout = function(){
+	$.post('logut',null,function(data){console.log(data); });
+	return false;
+}
+
+var sendCommand =  function (cmd){
+	 $.post('cmd/',{cmd:cmd},function(data){
+		 console.log('onPost ',data);
+		 var out=data.stderr+"\n"+data.stdout;
+		addTextToTerminal(out)
+		
+	 });
+}
+var addTextToTerminal = function (str){
+	var str2= $('#terminal').val();
+		var ar = str2.split("\n");
+		if(ar.length>100)	ar=ar.slice(ar.length-100);			
+		ar.push(str);
+		$('#terminal').val(ar.join("\n"));
+		$('#terminal').scrollTop($('#terminal')[0].scrollHeight);
+}
+var justAddText = function (str){
+	console.log('  justAddText    '+str);
+	$('#terminal').val($('#terminal').val()+str);
+}
+var onKeyPressed = function(evt){
+	var key = window.event.keyCode;
+	if(key == 13) {
+		var str= $('#terminal').val();
+		var ar = str.split("\n");
+		if(ar.length==0) return;		
+		var last = ar[ar.length-1];		 
+		sendCommand(last);
+		console.log(str);
+	}
+}
+
+var onCmdSelectChanged = function(){
+	console.log($('#cmdSelect').val());
+	var cmd=$('#cmdSelect').val();
+	if(cmd=='') return;
+	cmd+='&';	
+	justAddText(cmd);
+}
+$(document).ready(function(e) {
+   
+});
+</script>
+</head>
+<body>
+<div  class="header view">
+<input id="btnLogout" type="button"   data-id="logout" onclick="logout()" value="Logout" />
+</div>
+<br/>
+<div id="cmd-view" class="view">
+        
+            <textarea id="terminal"  rows="30" onkeypress="onKeyPressed()" ></textarea>
+        
+        
+            <select id="cmdSelect" onChange="onCmdSelectChanged()">
+            <option value="">&nbsp;</option>
+            <option value="cd ../">CD</option>
+             <option value="cd ../&cd ../">CD2</option>
+              <option value="cd ../&cd ../&cd../">CD3</option>
+            </select>
+       
+</div>
+</body>
+</html>

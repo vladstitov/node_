@@ -1,0 +1,91 @@
+<!doctype html>
+<html>
+<head>
+<meta charset="utf-8">
+<title>Login</title>
+<style type="text/css">
+
+body{
+	 text-align: center;	
+	background: rgb(238,238,238); /* Old browsers */
+background: -moz-linear-gradient(top,  rgba(238,238,238,1) 0%, rgba(238,238,238,1) 100%); /* FF3.6+ */
+background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,rgba(238,238,238,1)), color-stop(100%,rgba(238,238,238,1))); /* Chrome,Safari4+ */
+background: -webkit-linear-gradient(top,  rgba(238,238,238,1) 0%,rgba(238,238,238,1) 100%); /* Chrome10+,Safari5.1+ */
+background: -o-linear-gradient(top,  rgba(238,238,238,1) 0%,rgba(238,238,238,1) 100%); /* Opera 11.10+ */
+background: -ms-linear-gradient(top,  rgba(238,238,238,1) 0%,rgba(238,238,238,1) 100%); /* IE10+ */
+background: linear-gradient(to bottom,  rgba(238,238,238,1) 0%,rgba(238,238,238,1) 100%); /* W3C */
+filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#eeeeee', endColorstr='#eeeeee',GradientType=0 ); /* IE6-9 */
+
+}
+#loginform *{
+	 margin-bottom:1em;
+}
+#loginform{
+	margin-top:10em;	
+	padding:1em;
+	border:thin solid rgba(183,180,180,1.00);
+	border-radius: 5px;
+	box-shadow: 5px 5px 5px rgba(221,220,220,1.00);
+	display: inline-block;
+	text-align:left;
+}
+#btnSubmit{
+	width:100%;
+	text-align:center;
+ 
+ }
+</style>
+<script src="https://code.jquery.com/jquery-2.1.1.js" ></script>
+<script>
+$(document).ready(function(e) {
+	var timerwrong=0
+	
+	var hideWrongLogin = function(){$('#wronglogin').hide('fast')};
+	
+	var showWrongLogin = function(){
+		if(timerwrong)clearTimeout(timerwrong);
+			timerwrong = setTimeout(hideWrongLogin,3000);
+			$('#wronglogin').show('fast');
+		}
+	
+    $("#myform" ).submit(function(evt) {
+		evt.preventDefault();
+		var user = $(this).find('[data-id=user]').val();
+		var pass = $(this).find('[data-id=pass]').val(); 	
+		$.post('login',{user:user,pass:pass},function(res){
+		console.log(res);
+		if(res.profile){
+			document.location=res.profile;
+		}else if(res.result=='wrong login'){
+			showWrongLogin();
+		}else{
+			alert(res);
+		}
+		
+		});
+  
+});
+});
+
+</script>
+
+</head>
+<body>
+<div id="loginform">
+<div id="wronglogin" style="display:none;">
+Username or password incorrect.
+</div>
+<form  id="myform" action="login.html" >
+Username:<br/>
+<input type="text" data-id="user" name="user"/>
+<br/>
+Password:<br/>
+<input type="password"  data-id="pass" name="pass"/>
+<br/>
+<div id="btnSubmit">
+ <input  type="submit"  value="Submit"/>
+ </div>
+</form>
+</div>
+</body>
+</html>

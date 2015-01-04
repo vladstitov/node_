@@ -1,0 +1,2 @@
+c:\users\vladhome\documents\visual studio 2013\Projects\node_SManager\node_CPanel\bin\Microsoft.NodejsTools.WebRole.dll
+C:\Users\VladHome\documents\visual studio 2013\Projects\node_SManager\node_CPanel\obj\Debug\node_CPanel.njsprojResolveAssemblyReference.cache

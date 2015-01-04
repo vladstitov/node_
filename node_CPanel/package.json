@@ -1,0 +1,13 @@
+{
+  "name": "node_CPanel",
+  "version": "0.0.0",
+  "description": "node_CPanel",
+  "main": "server.js",
+  "author": {
+    "name": "VladHome",
+    "email": ""
+  },
+  "dependencies": {
+    "sqlite3": "~3.0.4"
+  }
+}

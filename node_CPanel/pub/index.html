@@ -1,0 +1,65 @@
+<html>
+<head>
+<script src="js/jquery-2.1.1.min.js" ></script>
+<script src="js/index.js" ></script>
+<style>
+
+body *{
+	margin-bottom:1em;	
+}
+.myblock{
+	float:left;
+	 box-shadow: 5px 5px 5px #888888;
+	 margin:1em;
+	 padding:1em;
+	 border:thin solid rgba(162,162,162,1.00);
+	 border-radius:5px;
+	 min-width:20em;
+	 
+}
+.myContent{
+	max-height:400px;
+	overflow:auto;
+	width:100%;
+}
+</style>
+</head>
+<body>
+<h1>Remote</h1>
+<div id="navigation" class="nav">
+<input type="button" value="CMD"  data-id="cmd"/>
+<input type="button" value="Net" data-id="net" />
+</div>
+<div id="cmd_view" class="view">
+    <div class="myblock">
+        <div>
+        <input id="cmdInput" type="text"  width="200"/>
+        <input id="btnSend" type="button"  value="Send"/>
+        <span>&nbsp;&nbsp;|&nbsp;&nbsp;Pre-sets:</span> 
+        <select id="selPesets" >
+            <option></option>    
+            <option value="ips" title="Gets remote ip addreses">Get IPs</option>
+        </select>  
+        </div>
+        <div id="selectors">
+        </div>
+        <h3>Info</h3>
+        <div id="info" class="myContent">
+        </div>
+    </div>
+    <div class="myblock">    
+        <h3>Result</h3>
+        <br/>
+        <br/>
+        <div id="result" class="myContent"></div>
+    </div>
+</div>
+
+<div id="net_view" class="view">
+		<h3>NET</h3>
+        <input id="filterNet" type="text" /> <br/>
+        <select id="selNet" ></select> <br/>
+        <input id="btnConnect" type="button"  value="Connect" /> <br/>
+</div>
+</body>
+</html>
