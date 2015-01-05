@@ -38,7 +38,6 @@
     <TypeScriptCompile Include="pub\js\ffm\FFM.ts" />
     <TypeScriptCompile Include="pub\js\main.ts" />
     <TypeScriptCompile Include="pub\js\RegA.ts" />
-    <TypeScriptCompile Include="pub\js\arch\remote.ts" />
     <TypeScriptCompile Include="pub\js\typing\jquery.d.ts" />
     <TypeScriptCompile Include="pub\js\typing\svgjs.d.ts" />
     <TypeScriptCompile Include="Scripts\typings\node\node.d.ts" />
@@ -51,6 +50,10 @@
     <Content Include="pub\CPanel.html" />
     <Content Include="pub\css\Admin.css" />
     <Content Include="pub\index.html" />
+    <Content Include="pub\js\Connector.js.map" />
+    <Content Include="pub\js\ffm\FFM.js.map" />
+    <Content Include="pub\js\main.js.map" />
+    <Content Include="pub\js\RegA.js.map" />
     <Content Include="pub\login.html" />
     <Content Include="README.md" />
   </ItemGroup>
@@ -62,9 +65,18 @@
     <Folder Include="pub\js\arch\" />
     <Folder Include="pub\js\typing\" />
     <Folder Include="pub\css\" />
+    <Folder Include="pub\libs\" />
     <Folder Include="Scripts\" />
     <Folder Include="Scripts\typings\" />
     <Folder Include="Scripts\typings\node\" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="pub\js\Connector.js" />
+    <Compile Include="pub\js\ffm\FFM.js" />
+    <Compile Include="pub\js\main.js" />
+    <Compile Include="pub\js\RegA.js" />
+    <Compile Include="pub\libs\jquery-1.11.2.min.js" />
+    <Compile Include="pub\libs\jquery-2.1.0.min.js" />
   </ItemGroup>
   <!-- Do not delete the following Import Project.  While this appears to do nothing it is a marker for setting TypeScript properties before our import that depends on them. -->
   <Import Project="$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v$(VisualStudioVersion)\TypeScript\Microsoft.TypeScript.targets" Condition="False" />
