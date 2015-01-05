@@ -13,7 +13,12 @@ var FileManager = (function () {
         this.fs = fs;
     }
     FileManager.prototype.onDirFiles = function (dir, err, files, callBack) {
+        if (!files) {
+            callBack({ error: 'cant get files from directory: ' + dir });
+            return;
+        }
         var i = 0;
+
         var n = files.length;
         var fs = this.fs;
         var filename;
@@ -200,7 +205,7 @@ var Server = (function () {
     Server.prototype.processGet = function (req, res, user) {
         var _this = this;
         // var u = this.url.parse(req.url, true);
-        var url = req.url;
+        var url = decodeURI(req.url);
         console.log(url);
         var q = url.indexOf('?');
         if (q === -1)

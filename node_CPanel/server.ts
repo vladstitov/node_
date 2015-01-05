@@ -16,8 +16,13 @@ class FileManager {
 
     }
 
-    private onDirFiles(dir:string,err: ErrnoException, files: string[],callBack:Function): void {
-        var i:number = 0;
+    private onDirFiles(dir: string, err: ErrnoException, files: string[], callBack: Function): void {
+        if (!files) {
+            callBack({ error: 'cant get files from directory: ' + dir });
+            return;
+        }
+        var i: number = 0;
+
         var n:number = files.length;       
         var fs = this.fs;
         var filename: string;
@@ -173,14 +178,14 @@ class Server {
 
     private processGet (req:http.ServerRequest, res:http.ServerResponse, user:any) {
         // var u = this.url.parse(req.url, true);
-        var url = req.url;
+        var url = decodeURI(req.url);
         console.log(url);
         var q = url.indexOf('?');
         if (q === -1) this.sendFile(url, res);
         else {
 
             var func: string[] = url.substr(1, q-1).split('/');
-            var args: string[] = url.substr(q+1).split(',');
+            var args: string[] = url.substr(q + 1).split(',');
 
             switch (func.shift()) {
                 case 'fileM':

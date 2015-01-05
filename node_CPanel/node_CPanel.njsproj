@@ -34,12 +34,34 @@
     <DebugSymbols>true</DebugSymbols>
   </PropertyGroup>
   <ItemGroup>
+    <TypeScriptCompile Include="pub\js\Connector.ts" />
+    <TypeScriptCompile Include="pub\js\ffm\FFM.ts" />
+    <TypeScriptCompile Include="pub\js\main.ts" />
+    <TypeScriptCompile Include="pub\js\RegA.ts" />
+    <TypeScriptCompile Include="pub\js\arch\remote.ts" />
+    <TypeScriptCompile Include="pub\js\typing\jquery.d.ts" />
+    <TypeScriptCompile Include="pub\js\typing\svgjs.d.ts" />
     <TypeScriptCompile Include="Scripts\typings\node\node.d.ts" />
     <TypeScriptCompile Include="server.ts" />
+    <Content Include="data\directories.db" />
+    <Content Include="data\server.crt" />
+    <Content Include="data\server.key" />
     <Content Include="package.json" />
+    <Content Include="pub\cmd.html" />
+    <Content Include="pub\CPanel.html" />
+    <Content Include="pub\css\Admin.css" />
+    <Content Include="pub\index.html" />
+    <Content Include="pub\login.html" />
     <Content Include="README.md" />
   </ItemGroup>
   <ItemGroup>
+    <Folder Include="data\" />
+    <Folder Include="pub\" />
+    <Folder Include="pub\js\" />
+    <Folder Include="pub\js\ffm\" />
+    <Folder Include="pub\js\arch\" />
+    <Folder Include="pub\js\typing\" />
+    <Folder Include="pub\css\" />
     <Folder Include="Scripts\" />
     <Folder Include="Scripts\typings\" />
     <Folder Include="Scripts\typings\node\" />
