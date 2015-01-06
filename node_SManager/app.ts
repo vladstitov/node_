@@ -1,10 +1,11 @@
 ﻿var child = require('child_process');
 var error: number = 0;
-var server: Server;
+var server: AppController;
 var gitCtr: GitController;
 
 var FOLDER: string = 'myserver';
-var GITURL: string = 'https://github.com/vladvaldtitov/SimpleServer.git';
+//var GITURL: string = 'https://github.com/vladvaldtitov/SimpleServer.git';
+var GITURL: string = 'https://github.com/vladvaldtitov/node_CPanel.git';
 
 var settings = {
     FOLDER: FOLDER,
@@ -18,23 +19,23 @@ var settings = {
 }
 ////////////////////////////////////////////////////////////////////////////////////
 
-class Server {
+class AppController {
     private exec
     private pc: any;
     private PREF: string;   
 
+    private isHello:boolean
     private processData(data: string): void {
-        switch (data) {
-            case 'FROMSERVER_WAIT_RESTART':
-                console.log('Can t restart now waiting for restart ok'); 
-                break;
-            case 'FROMSERVER_EXITPC':
+        data = data.trim();
+        switch (data) {              
+            case 'FROM_APP_STOPPED':
+                this.pc.stdin.write("exitprocess\n");
                 this.pc.kill();
                 this.pc = null;
                 if (this.onServerStoped) this.onServerStoped();
                 break;
-            case 'FROMSERVER_SERVER_STOPED':
-                this.pc.stdin.write("exitpc\n");
+            case 'FROM_APPLICATION_HELLO':
+                this.isHello = true;
                 break;
 
         }
@@ -42,10 +43,8 @@ class Server {
 
 
     private onDataFromServer(data: string): void {
-        console.log('onDataFromServer: ' + data);
-        if (!data) return;
-        data = data.trim();
-        if (data.indexOf('FROMSERVER') == 0) this.processData(data);
+        console.log('onDataFromServer: ' + data);       
+        if (data && data.indexOf('FROM') == 0) this.processData(data);
     }
 
     private onDataClose(data: string): void {
@@ -54,22 +53,34 @@ class Server {
     private onDataError(data: string): void {
         console.log('onDataError: ' + data);
     }
+
+    private sendTest(): void {
+        this.pc.stdin.write("hello\n");
+    }
     constructor(child, private settings: any) {
         this.exec = child.exec;
         this.PREF = settings.PREF;
     }
 
+
     onServerStoped: Function;
-    startServer() { 
-        this.pc = this.exec(this.PREF + 'npm start');//, null, (err, stdout, stdin) => this.onData(err, stdout, stdin));
+    startApplication() {
+        this.pc = this.exec(this.PREF + 'npm start', function (error, stdout, stderr) {
+            console.log('on process end stdout: ' + stdout);
+            console.log('on process end stderr: ' + stderr);
+            console.log('on process end error: ' + error);
+
+        });//, null, (err, stdout, stdin) => this.onData(err, stdout, stdin));
+       
         this.pc.on('close', (code) => this.onDataClose(code));
         this.pc.stdout.on('data', (data) => this.onDataFromServer(data));
         this.pc.stderr.on('data', (data) => this.onDataError(data));
+        setTimeout(() => this.sendTest(), 1000);
     }   
 
-    stopServer() {
+    stopApplication() {
         console.log('sending stop server ');       
-        this.pc.stdin.write("stopserver\n");
+        this.pc.stdin.write("stopapplication\n");
     }
 
 }
@@ -248,11 +259,11 @@ class GitController {
 var onGitReady = function () {
     console.log('onGitReady');
     if (!server) {
-        server = new Server(child, settings);
+        server = new AppController(child, settings);
         server.onServerStoped = onServerStoped;
     }
     gitCtr.startTimer();
-    server.startServer();
+    server.startApplication();
     
 }
 var onServerStoped = function () {
@@ -260,7 +271,7 @@ var onServerStoped = function () {
     gitCtr.sendCommand('pull');
 }
 var stopServer = function () {
-    server.stopServer();
+    server.stopApplication();
 }
 
 var onHaveUpdate = function () {

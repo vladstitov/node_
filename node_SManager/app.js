@@ -4,7 +4,9 @@ var server;
 var gitCtr;
 
 var FOLDER = 'myserver';
-var GITURL = 'https://github.com/vladvaldtitov/SimpleServer.git';
+
+//var GITURL: string = 'https://github.com/vladvaldtitov/SimpleServer.git';
+var GITURL = 'https://github.com/vladvaldtitov/node_CPanel.git';
 
 var settings = {
     FOLDER: FOLDER,
@@ -18,48 +20,53 @@ var settings = {
 };
 
 ////////////////////////////////////////////////////////////////////////////////////
-var Server = (function () {
-    function Server(child, settings) {
+var AppController = (function () {
+    function AppController(child, settings) {
         this.settings = settings;
         this.exec = child.exec;
         this.PREF = settings.PREF;
     }
-    Server.prototype.processData = function (data) {
+    AppController.prototype.processData = function (data) {
+        data = data.trim();
         switch (data) {
-            case 'FROMSERVER_WAIT_RESTART':
-                console.log('Can t restart now waiting for restart ok');
-                break;
-            case 'FROMSERVER_EXITPC':
+            case 'FROM_APP_STOPPED':
+                this.pc.stdin.write("exitprocess\n");
                 this.pc.kill();
                 this.pc = null;
                 if (this.onServerStoped)
                     this.onServerStoped();
                 break;
-            case 'FROMSERVER_SERVER_STOPED':
-                this.pc.stdin.write("exitpc\n");
+            case 'FROM_APPLICATION_HELLO':
+                this.isHello = true;
                 break;
         }
     };
 
-    Server.prototype.onDataFromServer = function (data) {
+    AppController.prototype.onDataFromServer = function (data) {
         console.log('onDataFromServer: ' + data);
-        if (!data)
-            return;
-        data = data.trim();
-        if (data.indexOf('FROMSERVER') == 0)
+        if (data && data.indexOf('FROM') == 0)
             this.processData(data);
     };
 
-    Server.prototype.onDataClose = function (data) {
+    AppController.prototype.onDataClose = function (data) {
         console.log('onDataClose: ' + data);
     };
-    Server.prototype.onDataError = function (data) {
+    AppController.prototype.onDataError = function (data) {
         console.log('onDataError: ' + data);
     };
 
-    Server.prototype.startServer = function () {
+    AppController.prototype.sendTest = function () {
+        this.pc.stdin.write("hello\n");
+    };
+
+    AppController.prototype.startApplication = function () {
         var _this = this;
-        this.pc = this.exec(this.PREF + 'npm start'); //, null, (err, stdout, stdin) => this.onData(err, stdout, stdin));
+        this.pc = this.exec(this.PREF + 'npm start', function (error, stdout, stderr) {
+            console.log('on process end stdout: ' + stdout);
+            console.log('on process end stderr: ' + stderr);
+            console.log('on process end error: ' + error);
+        }); //, null, (err, stdout, stdin) => this.onData(err, stdout, stdin));
+
         this.pc.on('close', function (code) {
             return _this.onDataClose(code);
         });
@@ -69,13 +76,16 @@ var Server = (function () {
         this.pc.stderr.on('data', function (data) {
             return _this.onDataError(data);
         });
+        setTimeout(function () {
+            return _this.sendTest();
+        }, 1000);
     };
 
-    Server.prototype.stopServer = function () {
+    AppController.prototype.stopApplication = function () {
         console.log('sending stop server ');
-        this.pc.stdin.write("stopserver\n");
+        this.pc.stdin.write("stopapplication\n");
     };
-    return Server;
+    return AppController;
 })();
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -270,18 +280,18 @@ var GitController = (function () {
 var onGitReady = function () {
     console.log('onGitReady');
     if (!server) {
-        server = new Server(child, settings);
+        server = new AppController(child, settings);
         server.onServerStoped = onServerStoped;
     }
     gitCtr.startTimer();
-    server.startServer();
+    server.startApplication();
 };
 var onServerStoped = function () {
     console.log('server stoped ready for update');
     gitCtr.sendCommand('pull');
 };
 var stopServer = function () {
-    server.stopServer();
+    server.stopApplication();
 };
 
 var onHaveUpdate = function () {
