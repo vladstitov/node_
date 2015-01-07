@@ -96,26 +96,24 @@ export class AutServer {
 
     }
 
-    private processGet(req: http.ServerRequest, res: http.ServerResponse, user: any) {
-        // var u = this.url.parse(req.url, true);
-        var url = decodeURI(req.url);
-        console.log(url);
-        var q = url.indexOf('?');
-        if (q === -1) this.sendFile(url, res);
-        else {
 
-            var func: string[] = url.substr(1, q - 1).split('/');
-            var args: string[] = url.substr(q + 1).split(',');
-
-            switch (func.shift()) {
-                case 'fileM':
-                    this.fileManager.processRequest(func, args, (data) => this.sendJson(res, data));
-                    break;
-
-            }
-
+    private processGetQuery(url: string, q: number, res: http.ServerResponse): void {
+        var func: string[] = url.substr(1, q - 1).split('/');
+        var args: string[] = url.substr(q + 1).split(',');
+        switch (func.shift()) {
+            case 'fileM':
+                this.fileManager.processRequest(func, args, (data) => this.sendJson(res, data));
+                break;
 
         }
+    }
+
+    private processGet(req: http.ServerRequest, res: http.ServerResponse, user: any) {       
+        var url = decodeURI(req.url);
+       // console.log(url);
+        var q = url.indexOf('?');
+        if (q === -1) this.sendFile(url, res);
+        else this.processGetQuery(url, q, res);        
         /*
           if (user && user.role && user.role.indexOf('user') != -1) this.sendFile(u.pathname, res);
           else this.sendFile('/login.html', res);
@@ -216,7 +214,7 @@ export class AutServer {
     }
 
     close(): void {
-
+        this.server.close();
     }
 
     private isSecure: boolean;

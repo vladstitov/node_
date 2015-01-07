@@ -117,26 +117,28 @@ var AutServer = (function () {
         });
     };
 
-    AutServer.prototype.processGet = function (req, res, user) {
+    AutServer.prototype.processGetQuery = function (url, q, res) {
         var _this = this;
-        // var u = this.url.parse(req.url, true);
+        var func = url.substr(1, q - 1).split('/');
+        var args = url.substr(q + 1).split(',');
+        switch (func.shift()) {
+            case 'fileM':
+                this.fileManager.processRequest(func, args, function (data) {
+                    return _this.sendJson(res, data);
+                });
+                break;
+        }
+    };
+
+    AutServer.prototype.processGet = function (req, res, user) {
         var url = decodeURI(req.url);
-        console.log(url);
+
+        // console.log(url);
         var q = url.indexOf('?');
         if (q === -1)
             this.sendFile(url, res);
-        else {
-            var func = url.substr(1, q - 1).split('/');
-            var args = url.substr(q + 1).split(',');
-
-            switch (func.shift()) {
-                case 'fileM':
-                    this.fileManager.processRequest(func, args, function (data) {
-                        return _this.sendJson(res, data);
-                    });
-                    break;
-            }
-        }
+        else
+            this.processGetQuery(url, q, res);
         /*
         if (user && user.role && user.role.indexOf('user') != -1) this.sendFile(u.pathname, res);
         else this.sendFile('/login.html', res);
@@ -206,6 +208,7 @@ var AutServer = (function () {
     };
 
     AutServer.prototype.close = function () {
+        this.server.close();
     };
 
     AutServer.prototype.createServer = function (secure, port) {
