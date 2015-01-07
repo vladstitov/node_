@@ -34,6 +34,8 @@
     <DebugSymbols>true</DebugSymbols>
   </PropertyGroup>
   <ItemGroup>
+    <TypeScriptCompile Include="AutServer.ts" />
+    <TypeScriptCompile Include="FileManager.ts" />
     <TypeScriptCompile Include="pub\js\Connector.ts" />
     <TypeScriptCompile Include="pub\js\ffm\FFM.ts" />
     <TypeScriptCompile Include="pub\js\main.ts" />
