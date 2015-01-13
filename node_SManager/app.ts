@@ -19,10 +19,9 @@ var settings = {
 ////////////////////////////////////////////////////////////////////////////////////
 
 
-///////////////////////////////////////////////////////////////////////////////////////////////////////////
-
 var gitCtr:GC.GitController
 var server: AC.AppController;
+
 
 var onGitReady = function () {
     console.log('onGitReady');
@@ -47,7 +46,7 @@ var onHaveUpdate = function () {
     stopServer();
 }
 
-var startClone(): void {
+var startClone = function(){
     gitCtr.runClone();
 }
 
@@ -307,7 +306,6 @@ module GC {
             this.inProcess = 0;
             return 0;
         }
-
 
         runPull(): void {
             this.sendCommand('pull');
