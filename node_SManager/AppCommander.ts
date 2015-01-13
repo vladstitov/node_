@@ -1,7 +1,8 @@
-﻿export class AppController {
+﻿export class AppCommander {
     private exec
     private pc: any;
-    private PREF: string;   
+    private PREF: string; 
+    private APP_FOLDER: string;  
 
     private isHello: boolean
     private processData(data: string): void {
